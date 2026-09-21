@@ -9,7 +9,6 @@ namespace DeskFlow.API.Data
         {
         }
 
-        // Estas propriedades representam as tabelas que serão criadas no SQL Server
         public DbSet<Categoria> Categorias { get; set; }
         public DbSet<Chamado> Chamados { get; set; }
         public DbSet<Interacao> Interacoes { get; set; }

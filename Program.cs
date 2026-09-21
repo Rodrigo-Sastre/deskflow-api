@@ -1,5 +1,4 @@
 var builder = WebApplication.CreateBuilder(args);
-// Adicione os usings no topo do Program.cs
 using DeskFlow.API.Data;
 using Microsoft.EntityFrameworkCore;
 
