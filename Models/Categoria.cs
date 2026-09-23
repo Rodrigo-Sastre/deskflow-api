@@ -6,5 +6,8 @@ namespace DeskFlow.API.Models
         public string Nome { get; set; } = string.Empty;
 
         public List<Chamado> Chamados { get; set; } = new();
+
+        public bool Ativo { get; set; }
+
     }
 }
