@@ -3,16 +3,10 @@ using DeskFlow.API.Repositories;
 
 namespace DeskFlow.API.Services
 {
-    public class ChamadoService
+    public class ChamadoService(ChamadoRepository repository, CategoriaRepository categoriaRepository)
     {
-        private readonly ChamadoRepository _repository;
-        private readonly CategoriaRepository _categoriaRepository;
-
-        public ChamadoService(ChamadoRepository repository, CategoriaRepository categoriaRepository)
-        {
-            _repository = repository;
-            _categoriaRepository = categoriaRepository;
-        }
+        private readonly ChamadoRepository _repository = repository;
+        private readonly CategoriaRepository _categoriaRepository = categoriaRepository;
 
         public async Task<List<Chamado>> BuscarTodosAsync()
         {
@@ -27,16 +21,19 @@ namespace DeskFlow.API.Services
         public async Task<bool> AdicionarAsync(Chamado chamado)
         {
 
-            if (string.IsNullOrWhiteSpace(chamado.Solicitante) || string.IsNullOrWhiteSpace(chamado.Titulo))
+            if (string.IsNullOrWhiteSpace(chamado.SolicitanteNome) || string.IsNullOrWhiteSpace(chamado.Titulo))
                 return false;
-
 
             var categoriaExiste = await _categoriaRepository.BuscarPorIdAsync(chamado.CategoriaId);
             if (categoriaExiste == null)
                 return false;
 
 
-            chamado.Status = "Novo";
+            if (categoriaExiste == null)
+                return false;
+
+
+            chamado.Status = Status.Aberto;
             chamado.DataAbertura = DateTime.UtcNow;
 
             await _repository.AdicionarAsync(chamado);
