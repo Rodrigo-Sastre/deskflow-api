@@ -1,6 +1,8 @@
 using DeskFlow.API.Models;
 using DeskFlow.API.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace DeskFlow.API.Controllers
 {

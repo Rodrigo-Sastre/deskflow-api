@@ -25,6 +25,7 @@ namespace DeskFlow.API.Repositories
         {
             return await _context.Chamados
                 .Include(c => c.Categoria)
+                .Include(c => c.Interacoes)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 

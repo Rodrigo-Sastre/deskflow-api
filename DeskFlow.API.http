@@ -1,6 +1,16 @@
-@DeskFlow.API_HostAddress = http://localhost:5144
+### Iniciar o Chamado 1
+PATCH http://localhost:5144/api/Chamado/1/iniciar
 
-GET {{DeskFlow.API_HostAddress}}/weatherforecast/
-Accept: application/json
+### Encerrar o Chamado 1
+PATCH http://localhost:5144/api/Chamado/1/encerrar
+Content-Type: application/json
 
-###
+### Criar um comentário no Chamado 1
+POST http://localhost:5144/api/Interacao
+Content-Type: application/json
+
+{
+  "chamadoId": 1,
+  "quemEscreveu": "João Técnico",
+  "mensagem": "Iniciando a substituição da fonte de alimentação."
+}
