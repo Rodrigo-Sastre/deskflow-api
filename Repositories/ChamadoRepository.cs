@@ -46,5 +46,10 @@ namespace DeskFlow.API.Repositories
             _context.Chamados.Remove(chamado);
             await _context.SaveChangesAsync();
         }
+        public async Task AdicionarInteracaoAsync(Interacao interacao)
+        {
+            await _context.Interacoes.AddAsync(interacao);
+            await _context.SaveChangesAsync();
+        }
     }
 }

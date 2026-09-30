@@ -28,11 +28,6 @@ namespace DeskFlow.API.Services
             if (categoriaExiste == null)
                 return false;
 
-
-            if (categoriaExiste == null)
-                return false;
-
-
             chamado.Status = Status.Aberto;
             chamado.DataAbertura = DateTime.UtcNow;
 
@@ -66,6 +61,66 @@ namespace DeskFlow.API.Services
 
             await _repository.DeletarAsync(chamado);
             return true;
+        }
+
+        public async Task<(bool Sucesso, string Mensagem)> IniciarAtendimentoAsync(int id)
+        {
+            var chamado = await _repository.BuscarPorIdAsync(id);
+            if (chamado == null)
+                return (false, "Chamado não encontrado.");
+
+            if (chamado.Status != Status.Aberto)
+                return (false, "Apenas chamados com status 'Aberto' podem ser iniciados.");
+
+            chamado.Status = Status.EmAndamento;
+            await _repository.AtualizarAsync(chamado);
+
+            return (true, "Atendimento iniciado com sucesso.");
+        }
+
+
+        public async Task<(bool Sucesso, string Mensagem)> EncerrarChamadoAsync(int id, string solucao)
+        {
+            if (string.IsNullOrWhiteSpace(solucao))
+                return (false, "A solução é obrigatória para encerrar um chamado.");
+
+            var chamado = await _repository.BuscarPorIdAsync(id);
+            if (chamado == null)
+                return (false, "Chamado não encontrado.");
+
+            if (chamado.Status == Status.Fechado)
+                return (false, "Este chamado já se encontra encerrado.");
+
+            chamado.Status = Status.Fechado;
+            chamado.DataFechamento = DateTime.UtcNow;
+            chamado.Solucao = solucao;
+
+            await _repository.AtualizarAsync(chamado);
+
+            return (true, "Chamado encerrado com sucesso.");
+        }
+        public async Task<(bool Sucesso, string Mensagem)> AdicionarInteracaoAsync(int chamadoId, string autor, string mensagem)
+        {
+            if (string.IsNullOrWhiteSpace(autor) || string.IsNullOrWhiteSpace(mensagem))
+                return (false, "Autor e Mensagem são obrigatórios.");
+
+            var chamado = await _repository.BuscarPorIdAsync(chamadoId);
+            if (chamado == null)
+                return (false, "Chamado não encontrado.");
+
+            if (chamado.Status == Status.Fechado)
+                return (false, "Não é permitido adicionar interações em um chamado já encerrado.");
+
+            var interacao = new Interacao
+            {
+                ChamadoId = chamadoId,
+                QuemEscreveu = autor,
+                Mensagem = mensagem,
+                DataRegistro = DateTime.UtcNow
+            };
+
+            await _repository.AdicionarInteracaoAsync(interacao);
+            return (true, "Interação adicionada com sucesso.");
         }
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DeskFlow.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/chamados")]
     [ApiController]
     public class ChamadoController : ControllerBase
     {
@@ -17,7 +17,6 @@ namespace DeskFlow.API.Controllers
             _service = service;
         }
 
-        // RF12: Listagem (Futuramente receberá as query strings de filtros)
         [HttpGet]
         public async Task<IActionResult> BuscarTodos()
         {
@@ -25,7 +24,6 @@ namespace DeskFlow.API.Controllers
             return Ok(chamados);
         }
 
-        // RF11: Obter Detalhes Completos do Chamado
         [HttpGet("{id}")]
         public async Task<IActionResult> BuscarPorId(int id)
         {
@@ -36,7 +34,6 @@ namespace DeskFlow.API.Controllers
             return Ok(chamado);
         }
 
-        // RF06: Abrir Novo Chamado
         [HttpPost]
         public async Task<IActionResult> AbrirChamado([FromBody] Chamado chamado)
         {
@@ -47,44 +44,53 @@ namespace DeskFlow.API.Controllers
             return CreatedAtAction(nameof(BuscarPorId), new { id = chamado.Id }, chamado);
         }
 
-        // RF07: Iniciar Atendimento
         [HttpPatch("{id}/iniciar")]
         public async Task<IActionResult> IniciarAtendimento(int id)
         {
-            var chamado = await _service.BuscarPorIdAsync(id);
-            if (chamado == null)
-                return NotFound(new { mensagem = "Chamado não encontrado." });
+            var (sucesso, mensagem) = await _service.IniciarAtendimentoAsync(id);
 
-            if (chamado.Status != Status.Aberto)
-                return BadRequest(new { mensagem = "Apenas chamados com status 'Aberto' podem ser iniciados." });
+            if (!sucesso)
+            {
+                if (mensagem == "Chamado não encontrado.")
+                    return NotFound(new { mensagem });
 
-            chamado.Status = Status.EmAndamento;
-            await _service.AtualizarAsync(chamado);
+                return BadRequest(new { mensagem });
+            }
 
-            return Ok(new { mensagem = "Atendimento iniciado com sucesso.", chamado });
+            return Ok(new { mensagem });
         }
 
-        // RF08: Encerrar Chamado
+
         [HttpPatch("{id}/encerrar")]
-        public async Task<IActionResult> EncerrarChamado(int id, [FromBody] string solucao)
+        public async Task<IActionResult> EncerrarChamado(int id, [FromBody] EncerrarChamadoDto dto)
         {
-            if (string.IsNullOrWhiteSpace(solucao))
-                return BadRequest(new { mensagem = "A solução é obrigatória para encerrar um chamado." });
+            var (sucesso, mensagem) = await _service.EncerrarChamadoAsync(id, dto.Solucao);
 
-            var chamado = await _service.BuscarPorIdAsync(id);
-            if (chamado == null)
-                return NotFound(new { mensagem = "Chamado não encontrado." });
+            if (!sucesso)
+            {
+                if (mensagem == "Chamado não encontrado.")
+                    return NotFound(new { mensagem });
 
-            if (chamado.Status == Status.Fechado)
-                return BadRequest(new { mensagem = "Este chamado já se encontra encerrado." });
+                return BadRequest(new { mensagem });
+            }
 
-            chamado.Status = Status.Fechado;
-            chamado.DataFechamento = DateTime.UtcNow;
-            chamado.Solucao = solucao;
+            return Ok(new { mensagem });
+        }
 
-            await _service.AtualizarAsync(chamado);
+        [HttpPost("{id}/interacoes")]
+        public async Task<IActionResult> AdicionarInteracao(int id, [FromBody] CriarInteracaoDto dto)
+        {
+            var (sucesso, mensagem) = await _service.AdicionarInteracaoAsync(id, dto.Autor, dto.Mensagem);
 
-            return Ok(new { mensagem = "Chamado encerrado com sucesso.", chamado });
+            if (!sucesso)
+            {
+                if (mensagem == "Chamado não encontrado.")
+                    return NotFound(new { mensagem });
+
+                return BadRequest(new { mensagem });
+            }
+
+            return Ok(new { mensagem });
         }
     }
 }

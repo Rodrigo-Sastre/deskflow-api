@@ -40,5 +40,9 @@ namespace DeskFlow.API.Repositories
             _context.Categorias.Remove(categoria);
             await _context.SaveChangesAsync();
         }
+        public async Task<bool> PossuiChamadosVinculadosAsync(int categoriaId)
+        {
+            return await _context.Chamados.AnyAsync(c => c.CategoriaId == categoriaId);
+        }
     }
 }

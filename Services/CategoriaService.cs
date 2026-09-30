@@ -50,14 +50,18 @@ namespace DeskFlow.API.Services
             return true;
         }
 
-        public async Task<bool> DeletarAsync(int id)
+        public async Task<(bool Sucesso, string Mensagem)> DeletarAsync(int id)
         {
             var categoria = await _repository.BuscarPorIdAsync(id);
             if (categoria == null)
-                return false;
+                return (false, "Categoria não encontrada.");
+
+            var temChamados = await _repository.PossuiChamadosVinculadosAsync(id);
+            if (temChamados)
+                return (false, "Não é possível excluir uma categoria que possui chamados vinculados.");
 
             await _repository.DeletarAsync(categoria);
-            return true;
+            return (true, "Categoria excluída com sucesso.");
         }
     }
 }

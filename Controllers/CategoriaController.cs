@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DeskFlow.API.Controllers
 {
 
-    [Route("api/[controller]")]
+    [Route("api/categoria")]
     [ApiController]
     public class CategoriaController : ControllerBase
     {
@@ -58,11 +58,17 @@ namespace DeskFlow.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Deletar(int id)
         {
-            var sucesso = await _service.DeletarAsync(id);
-            if (!sucesso)
-                return NotFound(new { mensagem = "Categoria não encontrada." });
+            var (sucesso, mensagem) = await _service.DeletarAsync(id);
 
-            return Ok(new { mensagem = "Categoria apagada com sucesso." });
+            if (!sucesso)
+            {
+                if (mensagem == "Categoria não encontrada.")
+                    return NotFound(new { mensagem });
+
+                return BadRequest(new { mensagem });
+            }
+
+            return Ok(new { mensagem });
         }
     }
 }
