@@ -2,6 +2,7 @@ using DeskFlow.API.Data;
 using Microsoft.EntityFrameworkCore;
 using DeskFlow.API.Repositories;
 using DeskFlow.API.Services;
+using DeskFlow.API.Middlewares;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +26,8 @@ builder.Services.AddScoped<ChamadoRepository>();
 builder.Services.AddScoped<ChamadoService>();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.MapOpenApi();
 
