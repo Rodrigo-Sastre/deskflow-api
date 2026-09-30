@@ -13,12 +13,28 @@ namespace DeskFlow.API.Repositories
             _context = context;
         }
 
-        public async Task<List<Chamado>> BuscarTodosAsync()
+        public async Task<List<Chamado>> BuscarTodosAsync(Status? status = null, Prioridade? prioridade = null, int? categoriaId = null)
         {
-
-            return await _context.Chamados
+            var query = _context.Chamados
                 .Include(c => c.Categoria)
-                .ToListAsync();
+                .AsQueryable();
+
+            if (status.HasValue)
+            {
+                query = query.Where(c => c.Status == status.Value);
+            }
+
+            if (prioridade.HasValue)
+            {
+                query = query.Where(c => c.Prioridade == prioridade.Value);
+            }
+
+            if (categoriaId.HasValue)
+            {
+                query = query.Where(c => c.CategoriaId == categoriaId.Value);
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task<Chamado?> BuscarPorIdAsync(int id)

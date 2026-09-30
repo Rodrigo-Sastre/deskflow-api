@@ -18,9 +18,9 @@ namespace DeskFlow.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> BuscarTodos()
+        public async Task<IActionResult> BuscarTodos([FromQuery] Status? status, [FromQuery] Prioridade? prioridade, [FromQuery] int? categoriaId)
         {
-            var chamados = await _service.BuscarTodosAsync();
+            var chamados = await _service.BuscarTodosAsync(status, prioridade, categoriaId);
             return Ok(chamados);
         }
 

@@ -8,9 +8,9 @@ namespace DeskFlow.API.Services
         private readonly ChamadoRepository _repository = repository;
         private readonly CategoriaRepository _categoriaRepository = categoriaRepository;
 
-        public async Task<List<Chamado>> BuscarTodosAsync()
+        public async Task<List<Chamado>> BuscarTodosAsync(Status? status = null, Prioridade? prioridade = null, int? categoriaId = null)
         {
-            return await _repository.BuscarTodosAsync();
+            return await _repository.BuscarTodosAsync(status, prioridade, categoriaId);
         }
 
         public async Task<Chamado?> BuscarPorIdAsync(int id)
