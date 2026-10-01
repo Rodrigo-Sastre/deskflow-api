@@ -18,6 +18,7 @@ namespace DeskFlow.API.Services
             return await _repository.BuscarPorIdAsync(id);
         }
 
+        // RF06: Define automaticamente o status inicial como Aberto e grava a data de abertura
         public async Task<bool> AdicionarAsync(Chamado chamado)
         {
 
@@ -63,6 +64,7 @@ namespace DeskFlow.API.Services
             return true;
         }
 
+        // RF07: Validação de ciclo de vida - apenas chamados no status Aberto podem ser iniciados
         public async Task<(bool Sucesso, string Mensagem)> IniciarAtendimentoAsync(int id)
         {
             var chamado = await _repository.BuscarPorIdAsync(id);
@@ -78,7 +80,7 @@ namespace DeskFlow.API.Services
             return (true, "Atendimento iniciado com sucesso.");
         }
 
-
+        // RF08: Validação de ciclo de vida - exige preenchimento da solução e altera status para Fechado
         public async Task<(bool Sucesso, string Mensagem)> EncerrarChamadoAsync(int id, string solucao)
         {
             if (string.IsNullOrWhiteSpace(solucao))
@@ -99,6 +101,8 @@ namespace DeskFlow.API.Services
 
             return (true, "Chamado encerrado com sucesso.");
         }
+
+        // RF10: Regra de negócio - bloqueia novas interações se o chamado já estiver Fechado
         public async Task<(bool Sucesso, string Mensagem)> AdicionarInteracaoAsync(int chamadoId, string autor, string mensagem)
         {
             if (string.IsNullOrWhiteSpace(autor) || string.IsNullOrWhiteSpace(mensagem))

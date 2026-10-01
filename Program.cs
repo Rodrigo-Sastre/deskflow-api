@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configuração do JSON: Converte Enums para texto e evita erros de loop infinito nos relacionamentos
 builder.Services.AddOpenApi();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -18,13 +19,16 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     });
 
+// Configuração da conexão com o banco de dados SQL Server via Entity Framework Core
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Injeção de Dependências: Registra Repositórios e Serviços no ciclo de vida Scoped    
 builder.Services.AddScoped<CategoriaRepository>();
 builder.Services.AddScoped<CategoriaService>();
 builder.Services.AddScoped<ChamadoRepository>();
 builder.Services.AddScoped<ChamadoService>();
 
+// RNF03: Middleware customizado para captura global de exceções e retorno de JSON limpo
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();

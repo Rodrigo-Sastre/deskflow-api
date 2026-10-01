@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DeskFlow.API.Controllers
 {
 
+    // RNF02: Rota RESTful no plural e minúsculo
     [Route("api/categoria")]
     [ApiController]
     public class CategoriaController : ControllerBase
@@ -34,6 +35,7 @@ namespace DeskFlow.API.Controllers
             return Ok(categoria);
         }
 
+        // RF02: Cadastra nova categoria e retorna o status 201 Created com a rota de consulta
         [HttpPost]
         public async Task<IActionResult> Adicionar([FromBody] Categoria categoria)
         {
@@ -55,6 +57,7 @@ namespace DeskFlow.API.Controllers
             return Ok(new { mensagem = "Categoria atualizada com sucesso." });
         }
 
+        // RF04: Deleta a categoria caso não possua chamados atrelados
         [HttpDelete("{id}")]
         public async Task<IActionResult> Deletar(int id)
         {

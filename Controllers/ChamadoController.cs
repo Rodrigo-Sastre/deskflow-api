@@ -17,6 +17,7 @@ namespace DeskFlow.API.Controllers
             _service = service;
         }
 
+        // RF12: Listagem de chamados com suporte a filtros dinâmicos opcionais via Query String
         [HttpGet]
         public async Task<IActionResult> BuscarTodos([FromQuery] Status? status, [FromQuery] Prioridade? prioridade, [FromQuery] int? categoriaId)
         {
@@ -33,7 +34,7 @@ namespace DeskFlow.API.Controllers
 
             return Ok(chamado);
         }
-
+        // RF06: Endpoint para abertura de chamado (registrado inicialmente como Aberto)
         [HttpPost]
         public async Task<IActionResult> AbrirChamado([FromBody] Chamado chamado)
         {
@@ -44,6 +45,7 @@ namespace DeskFlow.API.Controllers
             return CreatedAtAction(nameof(BuscarPorId), new { id = chamado.Id }, chamado);
         }
 
+        // RF07: Altera o status do chamado de Aberto para EmAndamento
         [HttpPatch("{id}/iniciar")]
         public async Task<IActionResult> IniciarAtendimento(int id)
         {
@@ -60,7 +62,7 @@ namespace DeskFlow.API.Controllers
             return Ok(new { mensagem });
         }
 
-
+        // RF08: Encerra o chamado registrando a data atual e a justificativa da solução
         [HttpPatch("{id}/encerrar")]
         public async Task<IActionResult> EncerrarChamado(int id, [FromBody] EncerrarChamadoDto dto)
         {
@@ -77,6 +79,7 @@ namespace DeskFlow.API.Controllers
             return Ok(new { mensagem });
         }
 
+        // RF10: Endpoint aninhado para adicionar notas técnicas e histórico ao chamado
         [HttpPost("{id}/interacoes")]
         public async Task<IActionResult> AdicionarInteracao(int id, [FromBody] CriarInteracaoDto dto)
         {

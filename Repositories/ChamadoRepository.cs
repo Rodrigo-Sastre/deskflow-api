@@ -13,6 +13,7 @@ namespace DeskFlow.API.Repositories
             _context = context;
         }
 
+        // RF12: Monta dinamicamente a consulta LINQ conforme os filtros informados pelo usuário
         public async Task<List<Chamado>> BuscarTodosAsync(Status? status = null, Prioridade? prioridade = null, int? categoriaId = null)
         {
             var query = _context.Chamados
@@ -37,6 +38,7 @@ namespace DeskFlow.API.Repositories
             return await query.ToListAsync();
         }
 
+        // RF11: Carrega os dados do chamado juntamente com sua Categoria e histórico de Interações
         public async Task<Chamado?> BuscarPorIdAsync(int id)
         {
             return await _context.Chamados

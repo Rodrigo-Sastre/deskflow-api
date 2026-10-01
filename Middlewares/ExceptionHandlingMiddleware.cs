@@ -14,6 +14,7 @@ namespace DeskFlow.API.Middlewares
 
         public async Task InvokeAsync(HttpContext context)
         {
+            // Intercepta qualquer requisição HTTP e captura falhas não tratadas na aplicação
             try
             {
                 // Deixa a requisição seguir o fluxo normal (Controller, Service, etc.)
@@ -26,6 +27,7 @@ namespace DeskFlow.API.Middlewares
             }
         }
 
+        // Padroniza a resposta de erro 500 em formato JSON amigável, impedindo o vazamento de stack trace
         private static Task TratarExcecaoAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
