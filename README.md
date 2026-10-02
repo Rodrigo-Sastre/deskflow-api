@@ -49,7 +49,22 @@ O sistema controla a transição de status exclusivamente na camada de **Service
 ### Passo a Passo
 
 1. **Clone este repositório:**
+
    ```bash
    git clone https://github.com/Rodrigo-Sastre/deskflow-api.git
    cd DeskFlow.API
+   ```
+
+   2. **Configure a Connection String no arquivo `appsettings.json`:**
+
+   ```json
+   "ConnectionStrings": {
+     "DefaultConnection": "Server=localhost\\SQLEXPRESS;Database=DeskFlowDb;Trusted_Connection=True;TrustServerCertificate=True;"
+   }
+   ```
+
+2. **Criar o Banco de Dados:**
+   Execute as Migrations para criar a estrutura no banco de dados (ou utilize o `script.sql` disponibilizado na raiz):
+   ```bash
+   dotnet ef database update
    ```
