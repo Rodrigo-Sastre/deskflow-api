@@ -6,7 +6,7 @@ namespace DeskFlow.API.Controllers
 {
 
     // RNF02: Rota RESTful no plural e minúsculo
-    [Route("api/categoria")]
+    [Route("api/categorias")]
     [ApiController]
     public class CategoriaController : ControllerBase
     {
@@ -26,7 +26,7 @@ namespace DeskFlow.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> BuscarPorId(int id)
+        public async Task<IActionResult> BuscarPorId([FromRoute] int id)
         {
             var categoria = await _service.BuscarPorIdAsync(id);
             if (categoria == null)
@@ -59,7 +59,7 @@ namespace DeskFlow.API.Controllers
 
         // RF04: Deleta a categoria caso não possua chamados atrelados
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Deletar(int id)
+        public async Task<IActionResult> Deletar([FromRoute] int id)
         {
             var (sucesso, mensagem) = await _service.DeletarAsync(id);
 

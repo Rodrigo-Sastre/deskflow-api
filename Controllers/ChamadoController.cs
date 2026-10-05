@@ -26,7 +26,7 @@ namespace DeskFlow.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> BuscarPorId(int id)
+        public async Task<IActionResult> BuscarPorId([FromRoute] int id)
         {
             var chamado = await _service.BuscarPorIdAsync(id);
             if (chamado == null)
@@ -47,7 +47,7 @@ namespace DeskFlow.API.Controllers
 
         // RF07: Altera o status do chamado de Aberto para EmAndamento
         [HttpPatch("{id}/iniciar")]
-        public async Task<IActionResult> IniciarAtendimento(int id)
+        public async Task<IActionResult> IniciarAtendimento([FromRoute] int id)
         {
             var (sucesso, mensagem) = await _service.IniciarAtendimentoAsync(id);
 
@@ -64,7 +64,7 @@ namespace DeskFlow.API.Controllers
 
         // RF08: Encerra o chamado registrando a data atual e a justificativa da solução
         [HttpPatch("{id}/encerrar")]
-        public async Task<IActionResult> EncerrarChamado(int id, [FromBody] EncerrarChamadoDto dto)
+        public async Task<IActionResult> EncerrarChamado([FromRoute] int id, [FromBody] EncerrarChamadoDto dto)
         {
             var (sucesso, mensagem) = await _service.EncerrarChamadoAsync(id, dto.Solucao);
 
@@ -81,7 +81,7 @@ namespace DeskFlow.API.Controllers
 
         // RF10: Endpoint aninhado para adicionar notas técnicas e histórico ao chamado
         [HttpPost("{id}/interacoes")]
-        public async Task<IActionResult> AdicionarInteracao(int id, [FromBody] CriarInteracaoDto dto)
+        public async Task<IActionResult> AdicionarInteracao([FromRoute] int id, [FromBody] CriarInteracaoDto dto)
         {
             var (sucesso, mensagem) = await _service.AdicionarInteracaoAsync(id, dto.Autor, dto.Mensagem);
 
