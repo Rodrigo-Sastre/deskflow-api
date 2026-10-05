@@ -68,3 +68,6 @@ O sistema controla a transição de status exclusivamente na camada de **Service
    ```bash
    dotnet ef database update
    ```
+
+🎥 Vídeo de Apresentação
+https://youtu.be/hUukmDTzXZE
