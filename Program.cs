@@ -8,7 +8,18 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Configuração do JSON: Converte Enums para texto e evita erros de loop infinito nos relacionamentos
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+    options.AddSchemaTransformer((schema, context, cancellationToken) =>
+    {
+        if (schema.Type.HasValue && schema.Type.Value.HasFlag(Microsoft.OpenApi.JsonSchemaType.Integer))
+        {
+            schema.Type = Microsoft.OpenApi.JsonSchemaType.Integer;
+            schema.Pattern = null;
+        }
+        return Task.CompletedTask;
+    });
+});
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
